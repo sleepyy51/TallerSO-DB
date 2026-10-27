@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:18.0-alpine
+    environment:
+      POSTGRES_DB: biblioteca
+      POSTGRES_USER: biblioteca
+      POSTGRES_PASSWORD: biblioteca
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro,Z
+
+volumes:
+  postgres_data:
