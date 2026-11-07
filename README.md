@@ -26,6 +26,32 @@ Para detener los contenedores:
 docker compose down
 ```
 
+### Error de DNS durante la instalación de npm
+
+Si la construcción falla con `EAI_AGAIN` o `getaddrinfo` al acceder a
+`registry.npmjs.org`, configure servidores DNS para Docker en la máquina
+virtual Debian:
+
+```bash
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json >/dev/null <<'EOF'
+{
+  "dns": ["1.1.1.1", "8.8.8.8"]
+}
+EOF
+
+sudo systemctl restart docker
+docker compose build --no-cache api
+docker compose up -d
+```
+
+Como alternativa temporal, puede construir usando la red del sistema anfitrión:
+
+```bash
+docker compose build --no-cache --network host api
+docker compose up -d
+```
+
 ## Iniciar la API localmente
 
 Con PostgreSQL ejecutándose mediante Docker:
