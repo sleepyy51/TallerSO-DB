@@ -10,6 +10,25 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro,Z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U biblioteca -d biblioteca"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: biblioteca
+      DB_USER: biblioteca
+      DB_PASSWORD: biblioteca
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   postgres_data:

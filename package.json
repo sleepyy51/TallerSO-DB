@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "start": "node api.js"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "pg": "^8.23.1"
+  }
+}
