@@ -1,28 +1,54 @@
 # Biblioteca
 
-Base de datos PostgreSQL para una biblioteca, inicializada automáticamente con `init.sql`.
+API REST educativa para administrar una biblioteca. Utiliza Node.js, Express y
+PostgreSQL, cuya estructura y datos iniciales se encuentran en `init.sql`.
 
-## Iniciar
+## Funcionalidades
+
+- Operaciones CRUD para usuarios, autores, libros y préstamos.
+- Verificación de disponibilidad de la API mediante `/api/health`.
+- Base de datos PostgreSQL inicializada automáticamente con Docker.
+- Prueba de carga con Grafana k6 y 20 usuarios virtuales.
+- Sin autenticación, pensada para fines educativos.
+
+## Iniciar con Docker
 
 ```bash
 docker compose up -d
+```
+
+La API queda disponible en `http://localhost:8080/api` y PostgreSQL en
+`localhost:5432`.
+
+Para detener los contenedores:
+
+```bash
+docker compose down
+```
+
+## Iniciar la API localmente
+
+Con PostgreSQL ejecutándose mediante Docker:
+
+```bash
+npm install
 npm start
 ```
 
-La API queda disponible en `http://localhost:8080/api`.
+## Recursos REST
 
-Recursos REST disponibles:
+| Recurso | Operaciones |
+|---|---|
+| `/api/users` | `GET`, `POST` |
+| `/api/users/:id` | `GET`, `PUT`, `DELETE` |
+| `/api/authors` | `GET`, `POST` |
+| `/api/authors/:id` | `GET`, `PUT`, `DELETE` |
+| `/api/books` | `GET`, `POST` |
+| `/api/books/:id` | `GET`, `PUT`, `DELETE` |
+| `/api/loans` | `GET`, `POST` |
+| `/api/loans/:id` | `GET`, `PUT`, `DELETE` |
 
-- `GET|POST /users`
-- `GET|PUT|DELETE /users/:id`
-- `GET|POST /authors`
-- `GET|PUT|DELETE /authors/:id`
-- `GET|POST /books`
-- `GET|PUT|DELETE /books/:id`
-- `GET|POST /loans`
-- `GET|PUT|DELETE /loans/:id`
-
-Los endpoints `POST` y `PUT` reciben JSON. Ejemplo:
+Las operaciones `POST` y `PUT` reciben datos en formato JSON. Ejemplo:
 
 ```bash
 curl -X POST http://localhost:8080/api/authors \
@@ -30,13 +56,18 @@ curl -X POST http://localhost:8080/api/authors \
   -d '{"name":"Jorge Luis Borges"}'
 ```
 
-La conexión queda disponible en `localhost:5432` con:
+## Prueba de carga
 
-- Base de datos: `biblioteca`
-- Usuario: `biblioteca`
-- Contraseña: `biblioteca`
+La prueba utiliza Grafana k6 para ejecutar solicitudes simultáneas a los
+endpoints de salud y consulta con 20 usuarios virtuales durante 10 segundos:
 
-Para borrar la base y ejecutar `init.sql` nuevamente:
+```bash
+docker compose --profile loadtest run --rm k6
+```
+
+## Reiniciar la base de datos
+
+Para borrar los datos y ejecutar `init.sql` nuevamente:
 
 ```bash
 docker compose down -v

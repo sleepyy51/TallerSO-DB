@@ -1,0 +1,5 @@
+FROM grafana/k6:latest
+
+COPY loadtest.js /loadtest.js
+
+ENTRYPOINT ["k6"]
